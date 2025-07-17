@@ -17,6 +17,8 @@ import (
 	validatortypes "github.com/example/usdwz/chain/x/validator/types"
 	yieldkeeper "github.com/example/usdwz/chain/x/yield/keeper"
 	yieldtypes "github.com/example/usdwz/chain/x/yield/types"
+
+	"github.com/example/usdwz/chain/vm"
 )
 
 // UsdWzApp is the main application type.
@@ -32,6 +34,9 @@ type UsdWzApp struct {
 	EscrowKeeper     escrowkeeper.Keeper
 	ValidatorKeeper  validatorkeeper.Keeper
 	YieldKeeper      yieldkeeper.Keeper
+
+	// validator scripting VM
+	VM *vm.VM
 }
 
 // New creates a new UsdWzApp instance with basic modules wired.
@@ -58,6 +63,7 @@ func New(logger log.Logger) *UsdWzApp {
 	app.EscrowKeeper = escrowkeeper.NewKeeper(cdc, keys[escrowtypes.StoreKey])
 	app.ValidatorKeeper = validatorkeeper.NewKeeper(cdc, keys[validatortypes.StoreKey])
 	app.YieldKeeper = yieldkeeper.NewKeeper(cdc, keys[yieldtypes.StoreKey])
+	app.VM = vm.New()
 
 	return app
 }
