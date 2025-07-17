@@ -26,7 +26,32 @@ M^0 acts as the underlying collateral. Every USDWZ minted requires an equivalent
    |`stablecoin`|Handles USDWZ minting, burning, and M^0-backed collateral management.|`MsgMint`, `MsgBurn`, `DepositCollateral`, `RedeemCollateral`|
    |`escrow`|Manages milestone-based escrows between requesters and labelers.|`CreateEscrow`, `SubmitMilestone`, `VoteMilestone`, `FinalizeEscrow`|
    |`validator`|Tracks validator voting for milestone approval and exposes slashing logic.|`SubmitVote`, `TallyVotes`, `Slash`|
-   |`yield`|Distributes M^0 yield to USDWZ holders.|`AccrueYield`, `DistributeYield`|
+|`yield`|Distributes M^0 yield to USDWZ holders.|`AccrueYield`, `DistributeYield`|
+
+### Validator Arbitration Architecture
+
+Milestone approval rules are encoded as simple scripts interpreted by the
+`escrow` module. Each script references validator sets and uses opcodes to
+define how many approvals are needed. The goal is to avoid complex
+smart-contract logic while enabling deterministic execution within consensus.
+
+- **OP_SET `<id>`** – load a predefined validator set (`A`, `B`, etc.).
+- **OP_ANY** – approval succeeds if any validator in the current set votes `yes`.
+- **OP_QUORUM `<n>`** – succeed once `n` validators in the set vote `yes`.
+- **OP_ALL** – require unanimous approval from the current set.
+- **OP_THEN** – chain multiple conditions sequentially.
+
+Example scripts:
+
+1. `OP_SET A OP_ANY` – any validator in set A can approve.
+2. `OP_SET A OP_QUORUM 2` – at least two of three validators in set A approve.
+3. `OP_SET A OP_ALL` – unanimous approval from set A.
+4. `OP_SET A OP_QUORUM 2 OP_THEN OP_SET B OP_ALL` – quorum from set A followed by unanimous approval from set B.
+
+Validators stake tokens and earn a portion of escrow fees for timely votes. The
+`validator` module slashes stake for failing to vote or for submitting invalid
+votes. This incentive model aligns economic rewards with accurate milestone
+validation.
 
 3. **M^0 Integration**
    - Maintain a module account mirroring M^0 deposits.
@@ -93,7 +118,7 @@ Each module defines `keeper`, `types`, `msgs`, and `client` packages according t
 ## Testcase Plan
 
 1. **Unit Tests**: `go test ./...` covers all modules.
-2. **Integration Tests**: launch a local chain inside tests (`go test -tags=integration ./tests/integration`). Mock M^0 deposits and validator votes.
+2. **Integration Tests**: launch a local chain inside tests (`go test -tags=integration ./tests/integration`). Mock M^0 deposits, validator votes, and the four approval scripts.
 3. **M^0 Tests**: verify collateral ratio and yield distribution.
 4. Continuous integration must run formatting and tests on every commit.
 
