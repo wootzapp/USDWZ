@@ -38,4 +38,8 @@ func TestKVStoreKey(t *testing.T) {
 	if k1 == k2 {
 		t.Fatal("store keys should be distinct")
 	}
+
+	if a.VM == nil {
+		t.Fatal("vm should initialize")
+	}
 }
