@@ -25,8 +25,14 @@ M^0 acts as the underlying collateral. Every USDWZ minted requires an equivalent
    |--------|-----------------|---------------|
    |`stablecoin`|Handles USDWZ minting, burning, and M^0-backed collateral management.|`MsgMint`, `MsgBurn`, `DepositCollateral`, `RedeemCollateral`|
    |`escrow`|Manages milestone-based escrows between requesters and labelers.|`CreateEscrow`, `SubmitMilestone`, `VoteMilestone`, `FinalizeEscrow`|
-   |`validator`|Tracks validator voting for milestone approval and exposes slashing logic.|`SubmitVote`, `TallyVotes`, `Slash`|
+|`validator`|Tracks validator voting for milestone approval and exposes slashing logic.|`SubmitVote`, `TallyVotes`, `Slash`|
 |`yield`|Distributes M^0 yield to USDWZ holders.|`AccrueYield`, `DistributeYield`|
+|`audit`|Publishes on-chain attestations for reserve verification.|`PublishAttestation`|
+|`monitoring`|Exposes Prometheus metrics for collateral and validator performance.|`StartServer`, `SetCollateral`|
+
+Label validators participate directly in consensus. Votes on each milestone are
+recorded on-chain and determine whether escrowed funds are released or
+refunded. Disputes are resolved automatically through block finality.
 
 ### Validator Arbitration Architecture
 
@@ -73,15 +79,16 @@ validation.
    - Integration tests launching a local chain and mocking M^0 deposits.
    - Tests ensuring the M^0 collateral account equals or exceeds supply.
    - GitHub Actions jobs for formatting and tests.
+   - Include testcases for the `monitoring` and `audit` packages to validate metrics output and attestation storage.
 
 7. **Deployment, Monitoring & Operational Housekeeping**
    - Provide validator setup instructions and monitor chain metrics.
-   - Use Prometheus and Grafana for node and module monitoring with alerts for collateral discrepancies.
+   - Use Prometheus and Grafana for node and module monitoring with alerts for collateral discrepancies. The `monitoring` package must expose a metrics server with tests covering its gauges.
    - Implement secure custody and key-management procedures for mint and burn operations.
    - Track treasury balances and validator behavior in real time with automated alerts.
-   - Schedule routine external audits of reserves and code; publish attestation reports.
+   - Schedule routine external audits of reserves and code; publish attestation reports using the `audit` module and its test suite.
    - Maintain relationships with banking partners to streamline collateral deposits and redemptions.
-   - Enforce KYC/AML checks for all mint and redemption operations.
+   - Enforce KYC/AML checks for all mint and redemption operations. Keep guidance for institutions in `docs/kyc_aml.md`.
 
 8. **Launch Sequence**
    - Complete module implementations and unit/integration tests.
