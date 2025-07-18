@@ -22,9 +22,10 @@
    - 5.4 [Deeper Analysis of the Cosmos & M^0 Model](#54-deeper-analysis-of-the-cosmos--m0-model)  
      - 5.4.1 [Increased Complexity Without M^0](#541-increased-complexity-without-m0)  
      - 5.4.2 [Could USDWZ Run Entirely on M^0 Without Cosmos?](#542-could-usdwz-run-entirely-on-m0-without-cosmos)  
-     - 5.4.3 [Cosmos Provides Base-Layer Capabilities Beyond M^0](#543-cosmos-provides-base-layer-capabilities-beyond-m0)  
-     - 5.4.4 [Loss of IBC and Easy Interchain Access](#544-loss-of-ibc-and-easy-interchain-access)  
-6. [Conclusion](#conclusion)  
+   - 5.4.3 [Cosmos Provides Base-Layer Capabilities Beyond M^0](#543-cosmos-provides-base-layer-capabilities-beyond-m0)
+   - 5.4.4 [Loss of IBC and Easy Interchain Access](#544-loss-of-ibc-and-easy-interchain-access)
+   - 5.5 [Operational Monitoring & Compliance](#55-operational-monitoring--compliance)
+6. [Conclusion](#conclusion)
 7. [References](#references)
 
 ---
@@ -168,6 +169,14 @@ Had USDWZ chosen an approach without Cosmos, it might lose:
 - **Dedicated Low-Cost Throughput**: A chain outside Cosmos might rely on a shared L1 or L2, facing congestion and unpredictable fees. With a Cosmos chain, resources are dedicated to USDWZ transactions, ensuring steady performance for thousands of labeling micropayments daily.
 
 Hence, adopting Cosmos ensures maximum portability, liquidity, and developer familiarity within a thriving interchain economy—factors essential to a stablecoin meant to serve a global AI labeling market.
+
+### 5.5 Operational Monitoring & Compliance
+
+To provide institutions with full confidence in USDWZ, the chain includes:
+
+- **Real-Time Metrics**: Each node runs a Prometheus server exposing collateral and validator performance.
+- **On-Chain Audit Attestations**: The audit module records JSON attestations for independent verification of reserves.
+- **KYC/AML Procedures**: Institutions must follow the [KYC/AML guidelines](docs/kyc_aml.md) before minting or redeeming.
 
 ---
 
