@@ -21,3 +21,6 @@ func StartServer(addr string) error {
 
 // SetCollateral sets the gauge value.
 func SetCollateral(v float64) { collateralGauge.Set(v) }
+
+// CollateralGaugeForTest exposes the gauge for assertions.
+func CollateralGaugeForTest() prometheus.Gauge { return collateralGauge }
