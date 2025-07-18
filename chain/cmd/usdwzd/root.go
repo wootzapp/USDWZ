@@ -2,6 +2,7 @@ package main
 
 import "github.com/spf13/cobra"
 
+// DefaultNodeHome defines the daemon's home directory used if none is provided.
 const DefaultNodeHome = ".usdWz"
 
 func newRootCmd() *cobra.Command {
