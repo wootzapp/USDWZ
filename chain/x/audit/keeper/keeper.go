@@ -36,3 +36,32 @@ func (k Keeper) PublishAttestation(ctx sdk.Context, hash string) error {
 	store.Set(key, bz)
 	return nil
 }
+
+// GetAttestation retrieves an attestation by hash.
+func (k Keeper) GetAttestation(ctx sdk.Context, hash string) (types.Attestation, bool) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte("attestation:" + hash))
+	if bz == nil {
+		return types.Attestation{}, false
+	}
+	var att types.Attestation
+	if err := json.Unmarshal(bz, &att); err != nil {
+		return types.Attestation{}, false
+	}
+	return att, true
+}
+
+// ListAttestations returns all stored attestations.
+func (k Keeper) ListAttestations(ctx sdk.Context) []types.Attestation {
+	store := ctx.KVStore(k.storeKey)
+	it := sdk.KVStorePrefixIterator(store, []byte("attestation:"))
+	defer it.Close()
+	var out []types.Attestation
+	for ; it.Valid(); it.Next() {
+		var att types.Attestation
+		if err := json.Unmarshal(it.Value(), &att); err == nil {
+			out = append(out, att)
+		}
+	}
+	return out
+}
