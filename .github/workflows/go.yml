@@ -2,9 +2,7 @@ name: Go CI
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
@@ -18,15 +16,17 @@ jobs:
         run: go mod download
       - name: Format
         run: |
-          fmt_out=$(gofmt -l $(git ls-files '*.go'))
-          if [ -n "$fmt_out" ]; then
-            echo "Go files not formatted:" && echo "$fmt_out" && exit 1
+          gofmt -w $(git ls-files '*.go')
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Go files not formatted" && git diff && exit 1
           fi
       - name: Vet
         run: go vet ./...
       - name: Test
         run: go test ./...
-  integration:
+  integration-tests:
+    name: Integration Tests
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
