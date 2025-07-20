@@ -1,7 +1,9 @@
 # USDWZ: The Decentralized Stablecoin for AI Data Generation
 
-**Version 1.0**  
+**Version 1.0**
 *March 2025*
+
+*For the latest development status see [PROGRESS.md](PROGRESS.md).* 
 
 ---
 
